@@ -23,6 +23,8 @@
 
 package net.afterchat.mocap;
 
+import java.io.File;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBiped;
@@ -124,7 +126,7 @@ public class RenderEntityMocap extends RenderBiped {
 		Object object = texturemanager.getTexture(par0ResourceLocation);
 
 		if (object == null) {
-			object = new ThreadDownloadImageData(par1Str, par2ResourceLocation,
+			object = new ThreadDownloadImageData((File)null,par1Str, par2ResourceLocation,
 					par3IImageBuffer);
 			texturemanager.loadTexture(par0ResourceLocation,
 					(ITextureObject) object);

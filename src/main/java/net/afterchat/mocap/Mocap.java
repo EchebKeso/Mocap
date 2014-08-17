@@ -58,7 +58,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
  * @author Echeb Keso
  * 
  */
-@Mod(modid = "Mocap", name = "Motion Capture", version = "0.8")
+@Mod(modid = "Mocap", name = "Motion Capture", version = "1.0")
 public class Mocap {
 	private static final Logger logger = LogManager.getLogger();
 
@@ -97,7 +97,7 @@ public class Mocap {
 		for (EntityPlayerMP player : temp) {
 			if (FMLCommonHandler.instance().getSidedDelegate().getServer()
 					.getConfigurationManager()
-					.isPlayerOpped(player.getCommandSenderName())) {
+					.func_152596_g(player.getGameProfile())) {
 				ChatComponentText cmp = new ChatComponentText("[MOCAP]: " + msg);
 
 				player.addChatMessage(cmp);
@@ -146,7 +146,7 @@ public class Mocap {
 		{
 			EntityPlayerMP tempPlayer = FMLCommonHandler.instance()
 					.getMinecraftServerInstance().getConfigurationManager()
-					.getPlayerForUsername(name);
+					.func_152612_a(name); /* 1.7.10 func_152612_a is getPlayerByName */
 
 			if (tempPlayer != null) {
 				return tempPlayer;

@@ -23,7 +23,10 @@
 
 package net.afterchat.mocap;
 
+import java.io.DataInputStream;
+import java.io.EOFException;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -33,15 +36,16 @@ import net.minecraftforge.common.DimensionManager;
 
 class PlayThread implements Runnable {
 	Thread t;
-	EntityMocap replayEntity;
-	RandomAccessFile in;
+	EntityMocap replayEntity;	
+	DataInputStream in;
 
 	public PlayThread(EntityMocap _player, String recfile) {
 		try {
 			File file = new File(DimensionManager.getCurrentSaveRootDirectory()
 					+ "/" + "mocaps");
-			in = new RandomAccessFile(file.getAbsolutePath() + "/" + recfile
-					+ ".mocap", "r");
+
+			in = new DataInputStream(new FileInputStream(file.getAbsolutePath() + "/" + recfile + ".mocap"));			
+
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -68,7 +72,7 @@ class PlayThread implements Runnable {
 				throw new Exception("Not a mocap");
 			}
 
-			while (in.getFilePointer() != in.length()) {
+			while (true) {
 				float yaw = in.readFloat();
 				float pitch = in.readFloat();
 				double x = in.readDouble();
@@ -167,10 +171,14 @@ class PlayThread implements Runnable {
 
 				Thread.sleep(100);
 			}
+		}
+		catch (EOFException e) {
+			System.out.println("Replay thread completed.");
+			// "Normal" exception (I kinda hate these ;)
 		} catch (Exception e) {
 			System.out.println("Replay thread interrupted.");
 			Mocap.instance
-					.broadcastMsg("Error loading mocap file, either not a mocap or recorded by an older version.");
+			.broadcastMsg("Error loading mocap file, either not a mocap or recorded by an older version.");
 			e.printStackTrace();
 		}
 

@@ -3,20 +3,18 @@
   "modid": "Mocap",
   "name": "Motion Capture",
   "description": "This mod records the motion of a player and replays that through a newly spawned entity.",
-  "version": "0.8",
-  "mcversion": "1.7.2",
+  "version": "1.0",
+  "mcversion": "1.7.10",
   "url": "http://www.afterchat.net",
   "updateUrl": "",
-  "authors": [
-    "EchebKeso"
-  ],
+  "authorList": ["EchebKeso"],
   "credits": "By EchebKeso, The Ridgearound Afterchat",
   "logoFile": "",
-  "screenshots": [
-  ],
+  "screenshots": [],
   "parent":"",
-"requiredMods": [ "Forge", "Mocap-core" ],
-  "dependencies": ["Mocap-core"  ],
- "useDependencyInformation": "false"
+  "requiredMods": [ "Forge", "Mocap-core" ],
+  "dependencies": ["Mocap-core"],
+  "dependants": [],
+  "useDependencyInformation": "true"
 }
 ]

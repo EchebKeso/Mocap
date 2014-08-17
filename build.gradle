@@ -20,12 +20,12 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "0.8-(1.7.2)"
+version = "1.0-(1.7.10)"
 group= "net.afterchat.mocap" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Mocap"
 
 minecraft {
-    version = "1.7.2-10.12.1.1061"
+    version = "1.7.10-10.13.0.1207"
     assetDir = "eclipse/assets"
 }
 

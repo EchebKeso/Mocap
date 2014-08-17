@@ -38,11 +38,16 @@ public class CommandMocapRec extends CommandBase {
 
 	@Override
 	public boolean canCommandSenderUseCommand(ICommandSender icommandsender) {
+		if (!(icommandsender instanceof EntityPlayer)) return false;
+
+		EntityPlayer ep = (EntityPlayer) icommandsender;
+
+		/* 1.7.10 "IsOpped" */
 		return MinecraftServer
 				.getServer()
 				.getConfigurationManager()
-				.isPlayerOpped(
-						((EntityPlayer) icommandsender).getCommandSenderName());
+				.func_152596_g(
+						(ep.getGameProfile()));
 	}
 
 	@Override
@@ -98,7 +103,7 @@ public class CommandMocapRec extends CommandBase {
 		if (aRecorder == null) {
 			Mocap.instance.broadcastMsg("Started recording "
 					+ player.getDisplayName() + " to file " + args[0]
-					+ ".mocap");
+							+ ".mocap");
 			MocapRecorder mcr = new MocapRecorder();
 			mcr.fileName = args[0].toLowerCase();
 			Mocap.instance.recordThreads.put(player, mcr);
