@@ -240,6 +240,13 @@ class RecordThread implements Runnable {
 				CompressedStreamTools.write(ma.itemData, in);
 				break;
 			}
+			
+			case MocapActionTypes.BREAKBLOCK: {
+				in.writeInt(ma.xCoord);
+				in.writeInt(ma.yCoord);
+				in.writeInt(ma.zCoord);				
+				break;
+			}
 
 			case MocapActionTypes.LOGOUT: {
 				Mocap.instance.recordThreads.remove(player);

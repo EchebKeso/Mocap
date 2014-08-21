@@ -30,6 +30,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
+import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
@@ -51,6 +52,29 @@ public class MocapEventHandler {
 		}
 	}
 
+	@SubscribeEvent
+	public void onBreakEvent(BreakEvent event) {
+		Side side = FMLCommonHandler.instance().getEffectiveSide();
+
+		if (side != Side.SERVER) return;
+		
+		if (event.getPlayer() instanceof EntityPlayerMP) {
+			EntityPlayerMP thePlayer = (EntityPlayerMP) event.getPlayer();
+			List<MocapAction> aList = Mocap.instance
+					.getActionListForPlayer(thePlayer);
+			if (aList != null) {
+				MocapAction ma = new MocapAction(
+						MocapActionTypes.BREAKBLOCK);
+				
+				ma.xCoord = event.x;
+				ma.yCoord = event.y;
+				ma.zCoord = event.z;
+				aList.add(ma);
+			}
+		}
+		
+	}
+	
 	@SubscribeEvent
 	public void onLivingPlaceBlockEvent(LivingPlaceBlockEvent event) {
 		Side side = FMLCommonHandler.instance().getEffectiveSide();

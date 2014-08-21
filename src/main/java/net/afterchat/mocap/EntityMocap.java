@@ -28,9 +28,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
@@ -140,13 +142,34 @@ public class EntityMocap extends EntityLiving {
 			break;
 		}
 
+		case MocapActionTypes.BREAKBLOCK: {
+			Block aBlock = worldObj.getBlock(ma.xCoord, ma.yCoord, ma.zCoord);
+			if (aBlock != Blocks.air)
+			{
+				 int i1 = worldObj.getBlockMetadata(ma.xCoord, ma.yCoord, ma.zCoord);
+				 
+				/* Play the visual effect associated with breaking this block + meta */
+				worldObj.playAuxSFX(2001, ma.xCoord, ma.yCoord, ma.zCoord, Block.getIdFromBlock(aBlock)
+						+ (i1 << 12));
+				                               
+                worldObj.setBlockToAir(ma.xCoord, ma.yCoord, ma.zCoord);
+                aBlock.onBlockDestroyedByPlayer(worldObj, ma.xCoord, ma.yCoord, ma.zCoord, i1);                
+                aBlock.dropBlockAsItem(worldObj,  ma.xCoord, ma.yCoord, ma.zCoord, i1, 0);		
+			}
+			break;
+		}
+		
 		case MocapActionTypes.PLACEBLOCK: {
 			ItemStack foo = ItemStack.loadItemStackFromNBT(ma.itemData);
 
 			if (foo.getItem() instanceof ItemBlock) {
 				ItemBlock f = (ItemBlock) foo.getItem();
+				
 				f.placeBlockAt(foo, null, worldObj, ma.xCoord, ma.yCoord,
 						ma.zCoord, 0, 0, 0, 0, foo.getItemDamage());
+				
+				/* Play the sound placing this block makes! */
+				worldObj.playSoundEffect((double)((float)ma.xCoord + 0.5F), (double)((float)ma.yCoord + 0.5F), (double)((float)ma.zCoord + 0.5F), f.field_150939_a.stepSound.func_150496_b(), (f.field_150939_a.stepSound.getVolume() + 1.0F) / 2.0F, f.field_150939_a.stepSound.getPitch() * 0.8F);
 			}
 
 			break;

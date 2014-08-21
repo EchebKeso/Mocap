@@ -156,6 +156,16 @@ class PlayThread implements Runnable {
 						break;
 					}
 
+					case MocapActionTypes.BREAKBLOCK: {
+						MocapAction ma = new MocapAction(MocapActionTypes.BREAKBLOCK);
+						ma.xCoord = in.readInt();
+						ma.yCoord = in.readInt();
+						ma.zCoord = in.readInt();
+
+						replayEntity.eventsList.add(ma);
+						break;
+					}
+					
 					case MocapActionTypes.PLACEBLOCK: {
 						MocapAction ma = new MocapAction(
 								MocapActionTypes.PLACEBLOCK);
