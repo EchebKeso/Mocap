@@ -58,7 +58,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
  * @author Echeb Keso
  * 
  */
-@Mod(modid = "Mocap", name = "Motion Capture", version = "1.0")
+@Mod(modid = "Mocap", name = "Motion Capture", version = "1.1")
 public class Mocap {
 	private static final Logger logger = LogManager.getLogger();
 

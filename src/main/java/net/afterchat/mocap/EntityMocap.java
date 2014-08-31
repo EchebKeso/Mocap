@@ -29,15 +29,25 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.Block;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 public class EntityMocap extends EntityLiving {
@@ -91,12 +101,30 @@ public class EntityMocap extends EntityLiving {
 					"chat.type.text", new Object[] { this.func_145748_c_(),
 							ma.message });
 			MinecraftServer.getServer().getConfigurationManager()
-					.sendChatMsgImpl(chatcomponenttranslation1, false);
+			.sendChatMsgImpl(chatcomponenttranslation1, false);
 			break;
 		}
 
 		case MocapActionTypes.SWIPE: {
 			swingItem();
+			
+			/* Ref: attackTargetEntityWithCurrentItem EntityPlayer */
+			EntityLivingBase mop = GetTargetEntityLiving(5);
+			if (mop != null)
+			{				
+				attackEntityAsMob(mop);
+
+				ItemStack theI = getHeldItem();
+				float dmg = 1.0f;
+				if (theI.getItem() instanceof ItemSword)
+				{
+					ItemSword itemsword = (ItemSword)theI.getItem();
+					dmg = itemsword.func_150931_i();
+					float f1 = EnchantmentHelper.getEnchantmentModifierLiving(this, mop);
+					dmg += f1;					
+				}
+				mop.attackEntityFrom(DamageSource.causeMobDamage(this), dmg);
+			}
 			break;
 		}
 
@@ -146,28 +174,28 @@ public class EntityMocap extends EntityLiving {
 			Block aBlock = worldObj.getBlock(ma.xCoord, ma.yCoord, ma.zCoord);
 			if (aBlock != Blocks.air)
 			{
-				 int i1 = worldObj.getBlockMetadata(ma.xCoord, ma.yCoord, ma.zCoord);
-				 
+				int i1 = worldObj.getBlockMetadata(ma.xCoord, ma.yCoord, ma.zCoord);
+
 				/* Play the visual effect associated with breaking this block + meta */
 				worldObj.playAuxSFX(2001, ma.xCoord, ma.yCoord, ma.zCoord, Block.getIdFromBlock(aBlock)
 						+ (i1 << 12));
-				                               
-                worldObj.setBlockToAir(ma.xCoord, ma.yCoord, ma.zCoord);
-                aBlock.onBlockDestroyedByPlayer(worldObj, ma.xCoord, ma.yCoord, ma.zCoord, i1);                
-                aBlock.dropBlockAsItem(worldObj,  ma.xCoord, ma.yCoord, ma.zCoord, i1, 0);		
+
+				worldObj.setBlockToAir(ma.xCoord, ma.yCoord, ma.zCoord);
+				aBlock.onBlockDestroyedByPlayer(worldObj, ma.xCoord, ma.yCoord, ma.zCoord, i1);                
+				aBlock.dropBlockAsItem(worldObj,  ma.xCoord, ma.yCoord, ma.zCoord, i1, 0);		
 			}
 			break;
 		}
-		
+
 		case MocapActionTypes.PLACEBLOCK: {
 			ItemStack foo = ItemStack.loadItemStackFromNBT(ma.itemData);
 
 			if (foo.getItem() instanceof ItemBlock) {
 				ItemBlock f = (ItemBlock) foo.getItem();
-				
+
 				f.placeBlockAt(foo, null, worldObj, ma.xCoord, ma.yCoord,
 						ma.zCoord, 0, 0, 0, 0, foo.getItemDamage());
-				
+
 				/* Play the sound placing this block makes! */
 				worldObj.playSoundEffect((double)((float)ma.xCoord + 0.5F), (double)((float)ma.yCoord + 0.5F), (double)((float)ma.zCoord + 0.5F), f.field_150939_a.stepSound.func_150496_b(), (f.field_150939_a.stepSound.getVolume() + 1.0F) / 2.0F, f.field_150939_a.stepSound.getPitch() * 0.8F);
 			}
@@ -253,4 +281,41 @@ public class EntityMocap extends EntityLiving {
 		return false;
 	}
 
+	/*
+	 * Modified from code found at:
+	 * http://www.minecraftforge.net/forum/index.php?topic=4925.0
+	 */
+	public EntityLivingBase GetTargetEntityLiving(int scanRadius)
+	{		
+		double targetDistance = Math.pow(scanRadius,2);
+
+		EntityLivingBase target = null;
+
+		List lst = worldObj.getEntitiesWithinAABBExcludingEntity(this, AxisAlignedBB.getBoundingBox(posX-scanRadius, posY-scanRadius, posZ-scanRadius, posX+scanRadius, posY+scanRadius, posZ+scanRadius));
+		for (int i = 0; i < lst.size(); i ++)
+		{
+			Entity ent = (Entity) lst.get(i);
+			if (ent instanceof EntityLivingBase && ent!=null && ent.boundingBox != null)
+			{
+
+				float distance = getDistanceToEntity(ent) + 0.1f;
+				float angle = rotationYawHead;
+				float pitch = rotationPitch;
+
+				Vec3 look = getLookVec();
+				Vec3 targetVec = Vec3.createVectorHelper(posX + look.xCoord * distance, (getEyeHeight()/2) + posY + look.yCoord * distance, posZ + look.zCoord * distance);
+
+				if (ent.boundingBox.isVecInside(targetVec))
+				{
+
+					if (distance < targetDistance && distance > 0)
+					{
+						targetDistance = distance;
+						target = (EntityLivingBase) ent;
+					}
+				}
+			}
+		}
+		return target;
+	}
 }

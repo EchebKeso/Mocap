@@ -183,7 +183,7 @@ class PlayThread implements Runnable {
 			}
 		}
 		catch (EOFException e) {
-			System.out.println("Replay thread completed.");
+//			System.out.println("Replay thread completed.");
 			// "Normal" exception (I kinda hate these ;)
 		} catch (Exception e) {
 			System.out.println("Replay thread interrupted.");

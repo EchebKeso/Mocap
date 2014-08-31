@@ -3,7 +3,7 @@
   "modid": "Mocap",
   "name": "Motion Capture",
   "description": "This mod records the motion of a player and replays that through a newly spawned entity.",
-  "version": "1.0",
+  "version": "1.1",
   "mcversion": "1.7.10",
   "url": "http://www.afterchat.net",
   "updateUrl": "",
