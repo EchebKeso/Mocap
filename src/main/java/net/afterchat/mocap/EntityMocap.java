@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -43,6 +44,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
@@ -120,7 +122,7 @@ public class EntityMocap extends EntityLiving {
 				{
 					ItemSword itemsword = (ItemSword)theI.getItem();
 					dmg = itemsword.func_150931_i();
-					float f1 = EnchantmentHelper.getEnchantmentModifierLiving(this, mop);
+					float f1 = EnchantmentHelper.func_152377_a(this.getHeldItem(), mop.getCreatureAttribute());
 					dmg += f1;					
 				}
 				mop.attackEntityFrom(DamageSource.causeMobDamage(this), dmg);
@@ -171,18 +173,17 @@ public class EntityMocap extends EntityLiving {
 		}
 
 		case MocapActionTypes.BREAKBLOCK: {
-			Block aBlock = worldObj.getBlock(ma.xCoord, ma.yCoord, ma.zCoord);
+			BlockPos bp = new BlockPos(ma.xCoord, ma.yCoord, ma.zCoord);
+			IBlockState bs = worldObj.getBlockState(bp);
+			Block aBlock = bs.getBlock();
 			if (aBlock != Blocks.air)
 			{
-				int i1 = worldObj.getBlockMetadata(ma.xCoord, ma.yCoord, ma.zCoord);
-
 				/* Play the visual effect associated with breaking this block + meta */
-				worldObj.playAuxSFX(2001, ma.xCoord, ma.yCoord, ma.zCoord, Block.getIdFromBlock(aBlock)
-						+ (i1 << 12));
+				worldObj.playAuxSFX(2001, bp, Block.getStateId(bs));
 
-				worldObj.setBlockToAir(ma.xCoord, ma.yCoord, ma.zCoord);
-				aBlock.onBlockDestroyedByPlayer(worldObj, ma.xCoord, ma.yCoord, ma.zCoord, i1);                
-				aBlock.dropBlockAsItem(worldObj,  ma.xCoord, ma.yCoord, ma.zCoord, i1, 0);		
+				worldObj.setBlockToAir(bp);
+				aBlock.onBlockDestroyedByPlayer(worldObj, bp, bs);                
+				aBlock.dropBlockAsItem(worldObj, bp, bs, 0);		
 			}
 			break;
 		}
@@ -287,7 +288,7 @@ public class EntityMocap extends EntityLiving {
 	 */
 	public EntityLivingBase GetTargetEntityLiving(int scanRadius)
 	{		
-		double targetDistance = Math.pow(scanRadius,2);
+		double targetDistance = Math.pow(scanRadius,4);
 
 		EntityLivingBase target = null;
 
@@ -295,7 +296,7 @@ public class EntityMocap extends EntityLiving {
 		for (int i = 0; i < lst.size(); i ++)
 		{
 			Entity ent = (Entity) lst.get(i);
-			if (ent instanceof EntityLivingBase && ent!=null && ent.boundingBox != null)
+			if (ent instanceof EntityLivingBase && ent!=null && ent.getBoundingBox() != null)
 			{
 
 				float distance = getDistanceToEntity(ent) + 0.1f;
@@ -303,9 +304,9 @@ public class EntityMocap extends EntityLiving {
 				float pitch = rotationPitch;
 
 				Vec3 look = getLookVec();
-				Vec3 targetVec = Vec3.createVectorHelper(posX + look.xCoord * distance, (getEyeHeight()/2) + posY + look.yCoord * distance, posZ + look.zCoord * distance);
+				Vec3 targetVec = Vec3.createVectorHelper(posX + look.xCoord * distance, (getEyeHeight()-0.2) + posY + look.yCoord * distance, posZ + look.zCoord * distance);
 
-				if (ent.boundingBox.isVecInside(targetVec))
+				if (ent.getBoundingBox().isVecInside(targetVec))
 				{
 
 					if (distance < targetDistance && distance > 0)

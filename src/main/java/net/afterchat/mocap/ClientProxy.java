@@ -24,7 +24,7 @@
 package net.afterchat.mocap;
 
 import net.minecraft.client.model.ModelBiped;
-import cpw.mods.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 
 public class ClientProxy extends CommonProxy {
 	@Override

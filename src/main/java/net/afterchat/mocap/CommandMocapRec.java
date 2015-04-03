@@ -46,7 +46,7 @@ public class CommandMocapRec extends CommandBase {
 		return MinecraftServer
 				.getServer()
 				.getConfigurationManager()
-				.func_152596_g(
+				.canSendCommands(
 						(ep.getGameProfile()));
 	}
 

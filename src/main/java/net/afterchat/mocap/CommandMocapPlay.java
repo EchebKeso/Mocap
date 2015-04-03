@@ -47,7 +47,7 @@ public class CommandMocapPlay extends CommandBase {
 
 	@Override
 	public boolean canCommandSenderUseCommand(ICommandSender icommandsender) {
-		if (!icommandsender.getCommandSenderName().equals("@")) {
+		if (!icommandsender.getName().equals("@")) {
 			return false;
 		}
 
@@ -66,7 +66,7 @@ public class CommandMocapPlay extends CommandBase {
 
 	@Override
 	public void processCommand(ICommandSender icommandsender, String[] args) {
-		if (!icommandsender.getCommandSenderName().equals("@")) {
+		if (!icommandsender.getName().equals("@")) {
 			return;
 		}
 
@@ -80,7 +80,7 @@ public class CommandMocapPlay extends CommandBase {
 					args[0]);
 
 			if (GuessPlayer != null) {
-				args[0] = GuessPlayer.getCommandSenderName();
+				args[0] = GuessPlayer.getName();
 			}
 		}
 

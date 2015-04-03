@@ -37,7 +37,7 @@ public class CommandMocapRecPlayer extends CommandBase {
 
 	@Override
 	public boolean canCommandSenderUseCommand(ICommandSender icommandsender) {
-		if (!icommandsender.getCommandSenderName().equals("@")) {
+		if (!icommandsender.getName().equals("@")) {
 			return false;
 		}
 
@@ -58,7 +58,7 @@ public class CommandMocapRecPlayer extends CommandBase {
 	public void processCommand(ICommandSender icommandsender, String[] args) {
 		EntityPlayer player;
 
-		if (!icommandsender.getCommandSenderName().equals("@")) {
+		if (!icommandsender.getName().equals("@")) {
 			return;
 		}
 
@@ -76,7 +76,7 @@ public class CommandMocapRecPlayer extends CommandBase {
 		}
 
 		if (args[1].equals("@p")) {
-			args[1] = player.getCommandSenderName();
+			args[1] = player.getName();
 		}
 
 		/* Are we being recorded? */

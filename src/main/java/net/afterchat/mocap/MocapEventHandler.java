@@ -31,10 +31,10 @@ import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
-import cpw.mods.fml.relauncher.Side;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class MocapEventHandler {
 	@SubscribeEvent
@@ -66,9 +66,9 @@ public class MocapEventHandler {
 				MocapAction ma = new MocapAction(
 						MocapActionTypes.BREAKBLOCK);
 				
-				ma.xCoord = event.x;
-				ma.yCoord = event.y;
-				ma.zCoord = event.z;
+				ma.xCoord = event.pos.getX();
+				ma.yCoord = event.pos.getY();
+				ma.zCoord = event.pos.getZ();
 				aList.add(ma);
 			}
 		}

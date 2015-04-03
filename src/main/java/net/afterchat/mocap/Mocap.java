@@ -40,17 +40,17 @@ import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler; // used in 1.6.2
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.registry.EntityRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventHandler; // used in 1.6.2
+import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
+import net.minecraftforge.fml.common.registry.LanguageRegistry;
 
 /**
  * The main Mocap class.
@@ -58,7 +58,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
  * @author Echeb Keso
  * 
  */
-@Mod(modid = "Mocap", name = "Motion Capture", version = "1.1")
+@Mod(modid = "Mocap", name = "Motion Capture", version = "1.11")
 public class Mocap {
 	private static final Logger logger = LogManager.getLogger();
 
@@ -97,7 +97,7 @@ public class Mocap {
 		for (EntityPlayerMP player : temp) {
 			if (FMLCommonHandler.instance().getSidedDelegate().getServer()
 					.getConfigurationManager()
-					.func_152596_g(player.getGameProfile())) {
+					.canSendCommands(player.getGameProfile())) {
 				ChatComponentText cmp = new ChatComponentText("[MOCAP]: " + msg);
 
 				player.addChatMessage(cmp);
@@ -146,7 +146,7 @@ public class Mocap {
 		{
 			EntityPlayerMP tempPlayer = FMLCommonHandler.instance()
 					.getMinecraftServerInstance().getConfigurationManager()
-					.func_152612_a(name); /* 1.7.10 func_152612_a is getPlayerByName */
+					.getPlayerByUsername(name); /* 1.7.10 func_152612_a is getPlayerByName */
 
 			if (tempPlayer != null) {
 				return tempPlayer;
@@ -160,11 +160,11 @@ public class Mocap {
 				.getConfigurationManager().playerEntityList;
 
 		for (EntityPlayerMP player : temp) {
-			if (player.getCommandSenderName().equalsIgnoreCase(name)) {
+			if (player.getName().equalsIgnoreCase(name)) {
 				return player;
 			}
 
-			if (player.getCommandSenderName().toLowerCase()
+			if (player.getName().toLowerCase()
 					.contains(name.toLowerCase())) {
 				possibles.add(player);
 			}
